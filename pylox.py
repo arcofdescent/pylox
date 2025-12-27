@@ -6,7 +6,7 @@ class Lox():
     def __init__(self):
         self.had_error = False
     
-    def run_repl(self):
+    def run_prompt(self):
         print("Running Lox REPL...")
         while True:
             try:

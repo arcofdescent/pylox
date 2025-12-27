@@ -11,7 +11,7 @@ def main(args):
     if len(args) == 1:
         lox.run_file(args[0])
     else:
-        lox.run_repl()
+        lox.run_prompt()
 
 
 if __name__ == "__main__":
