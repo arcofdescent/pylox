@@ -1,6 +1,6 @@
 
 import sys
-from pylox import Lox
+from pylox.main import Lox
 
 def main(args):
     lox = Lox()

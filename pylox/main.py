@@ -1,6 +1,8 @@
 
 import sys
 from typing import List
+from pylox.token import Token
+from pylox.scanner import Scanner
 
 class Lox():
     def __init__(self):
@@ -34,6 +36,11 @@ class Lox():
 
     def run(self, source: str):
         print(f"Executing Lox source:\n{source}")
+
+        scanner = Scanner(source, report_error=lambda line, where, message: self.report(line, where, message))
+        tokens: List[Token] = scanner.scan_tokens()
+        for token in tokens:
+            print(token)
 
     def error(self, line: int, message: str):
         self.report(line, "", message)

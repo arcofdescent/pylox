@@ -1,5 +1,5 @@
 
-from pylog.token_type import TokenType
+from pylox.token_type import TokenType
 
 class Token():
     def __init__(self, token_type, lexeme, literal, line):
