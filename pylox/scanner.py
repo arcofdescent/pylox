@@ -27,7 +27,7 @@ class Scanner():
 
     def scan_token(self):
         c = self.advance()
-        print(f"Scanning token: {c}")
+        # print(f"Scanning token: {c}")
 
         match c:
             case '(': self.add_token(TokenType.LEFT_PAREN)
@@ -63,6 +63,7 @@ class Scanner():
                 else:
                     self.add_token(TokenType.LESS)
                     
+            # slash or comment
             case '/':
                 if self.match('/'):
                     # A comment goes until the end of the line.
@@ -71,6 +72,32 @@ class Scanner():
                 else:
                     self.add_token(TokenType.SLASH)
                     
+            # whitespace
+            case ' ' | '\r' | '\t':
+                pass
+
+            # newline
+            case '\n':
+                self.line += 1
+
+            # string
+            case '"':
+                while self.peek() != '"' and not self.is_at_end():
+                    if self.peek() == '\n':
+                        self.line += 1
+                    self.advance()
+
+                if self.is_at_end():
+                    self.report_error(self.line, "", "Unterminated string.")
+                    return
+
+                # The closing ".
+                self.advance()
+
+                # Trim the surrounding quotes.
+                value = self.source[self.start + 1:self.current - 1]
+                self.add_token(TokenType.STRING, value)
+            
             case _:
                 self.report_error(self.line, "", f"Unexpected character: {c}")
             
