@@ -98,6 +98,22 @@ class Scanner():
                 value = self.source[self.start + 1:self.current - 1]
                 self.add_token(TokenType.STRING, value)
             
+            # numbers
+            case _ if c.isdigit():
+                while self.peek().isdigit():
+                    self.advance()
+
+                # Look for a fractional part.
+                if self.peek() == '.' and self.peek_next().isdigit():
+                    # Consume the "."
+                    self.advance()
+
+                    while self.peek().isdigit():
+                        self.advance()
+
+                value = float(self.source[self.start:self.current])
+                self.add_token(TokenType.NUMBER, value)
+                
             case _:
                 self.report_error(self.line, "", f"Unexpected character: {c}")
             
@@ -124,3 +140,8 @@ class Scanner():
             return '\0'
         return self.source[self.current]
     
+    def peek_next(self) -> str:
+        if self.current + 1 >= len(self.source):
+            return '\0'
+        return self.source[self.current + 1]
+
