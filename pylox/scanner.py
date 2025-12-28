@@ -63,6 +63,14 @@ class Scanner():
                 else:
                     self.add_token(TokenType.LESS)
                     
+            case '/':
+                if self.match('/'):
+                    # A comment goes until the end of the line.
+                    while self.peek() != '\n' and not self.is_at_end():
+                        self.advance()
+                else:
+                    self.add_token(TokenType.SLASH)
+                    
             case _:
                 self.report_error(self.line, "", f"Unexpected character: {c}")
             
@@ -83,3 +91,9 @@ class Scanner():
 
         self.current += 1
         return True
+
+    def peek(self) -> str:
+        if self.is_at_end():
+            return '\0'
+        return self.source[self.current]
+    
