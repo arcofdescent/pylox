@@ -12,6 +12,25 @@ class Scanner():
         self.line : int = 1
         self.report_error = report_error
 
+        self.keywords = {
+            "and": TokenType.AND,
+            "class": TokenType.CLASS,
+            "else": TokenType.ELSE,
+            "false": TokenType.FALSE,
+            "for": TokenType.FOR,
+            "fun": TokenType.FUN,
+            "if": TokenType.IF,
+            "nil": TokenType.NIL,
+            "or": TokenType.OR,
+            "print": TokenType.PRINT,
+            "return": TokenType.RETURN,
+            "super": TokenType.SUPER,
+            "this": TokenType.THIS,
+            "true": TokenType.TRUE,
+            "var": TokenType.VAR,
+            "while": TokenType.WHILE
+        }
+        
     def scan_tokens(self) -> List[Token]:
         print("Scanning tokens...")
 
@@ -114,6 +133,18 @@ class Scanner():
                 value = float(self.source[self.start:self.current])
                 self.add_token(TokenType.NUMBER, value)
                 
+            # identifiers and keywords
+            case _ if c.isalpha() or c == '_':
+                while self.peek().isalnum() or self.peek() == '_':
+                    self.advance()
+                text = self.source[self.start:self.current]
+
+                keyword_type = self.keywords.get(text)
+                if keyword_type is not None:
+                    self.add_token(keyword_type)
+                else:
+                    self.add_token(TokenType.IDENTIFIER)
+
             case _:
                 self.report_error(self.line, "", f"Unexpected character: {c}")
             
@@ -122,10 +153,6 @@ class Scanner():
         self.current += 1
         return ret
     
-    def add_token(self, token_type: TokenType, literal: object = None):
-        text = self.source[self.start:self.current]
-        self.tokens.append(Token(token_type, text, literal, self.line))
-
     def match(self, expected: str) -> bool:
         if self.is_at_end():
             return False
@@ -144,4 +171,8 @@ class Scanner():
         if self.current + 1 >= len(self.source):
             return '\0'
         return self.source[self.current + 1]
+
+    def add_token(self, token_type: TokenType, literal: object = None):
+        text = self.source[self.start:self.current]
+        self.tokens.append(Token(token_type, text, literal, self.line))
 
