@@ -5,3 +5,7 @@ b = 8;
 c = a + b;
 print c;
 
+if (c >= 42) {
+   print("greater");
+}
+
